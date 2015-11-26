@@ -173,6 +173,43 @@ event_time_to_live = {{ server.ttl }}
 alarm_history_time_to_live = {{ server.ttl }}
 
 #
+# From ceilometer
+#
+# Number of seconds that samples are kept in the database for (<= 0
+# means forever). (integer value)
+# Deprecated group/name - [database]/time_to_live
+metering_time_to_live = {{ server.ttl.meter }}
+
+# Number of seconds that events are kept in the database for (<= 0
+# means forever). (integer value)
+event_time_to_live = {{ server.ttl.event }}
+
+# The connection string used to connect to the metering database. (if
+# unset, connection is used) (string value)
+#metering_connection = <None>
+
+# The connection string used to connect to the alarm database. (if
+# unset, connection is used) (string value)
+#alarm_connection = <None>
+
+# The connection string used to connect to the event database. (if
+# unset, connection is used) (string value)
+#event_connection = <None>
+
+# The name of the replica set which is used to connect to MongoDB
+# database. If it is set, MongoReplicaSetClient will be used instead
+# of MongoClient. (string value)
+
+{%- if server.replica_set is defined %}
+mongodb_replica_set = {{ server.replica_set }}
+{%- endif %}
+
+# The max length of resources id in DB2 nosql, the value should be
+# larger than len(hostname) * 2 as compute node's resource id is
+# <hostname>_<nodename>. (integer value)
+#db2nosql_resource_id_maxlen = 512
+
+#
 # From oslo.db
 #
 
