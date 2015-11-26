@@ -31,13 +31,20 @@ parameters:
         rpc_thread_pool_size: 5
       database:
         engine: mongodb
-        members:
-        - host: ${_param:cluster_node01_address}
-          port: 27017
-        - host: ${_param:cluster_node02_address}
-          port: 27017
-        - host: ${_param:cluster_node03_address}
-          port: 27017
+        #vondrt4: Had to remove this. Reclass merges it into the final conf. and it makes trouble.
+        #members:
+        #- host: ${_param:cluster_node01_address}
+        #  port: 27017
+        #- host: ${_param:cluster_node02_address}
+        #  port: 27017
+        #- host: ${_param:cluster_node03_address}
+        #  port: 27017
         name: ceilometer
         user: ceilometer
         password: ${_param:mongodb_ceilometer_password}
+        replica_set: ceilometer
+      ttl:
+        meter: 604800
+        #1 week
+        event: 15724800
+        #1/2 year
