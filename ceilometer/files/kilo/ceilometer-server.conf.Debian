@@ -425,7 +425,7 @@ ack_on_event_error=True
 
 # Save event details. (boolean value)
 #store_events=false
-store_events=False
+store_events=True
 
 # Messaging URLs to listen for notifications. Example:
 # transport://user:pass@host1:port[,hostN:portN]/virtual_host
