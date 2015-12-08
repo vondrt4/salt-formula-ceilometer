@@ -31,6 +31,13 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
   - require:
     - pkg: ceilometer_server_packages
 
+/etc/ceilometer/event_definitions.yaml:
+  file.managed:
+  - source: salt://ceilometer/files/{{ server.version }}/event_definitions.yaml.yaml
+  - template: jinja
+  - require:
+    - pkg: ceilometer_server_packages
+
 ceilometer_server_services:
   service.running:
   - names: {{ server.services }}
