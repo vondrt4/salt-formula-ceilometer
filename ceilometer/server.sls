@@ -55,6 +55,13 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
   - require:
     - pkg: ceilometer_server_packages
 
+/etc/ceilometer/event_pipeline.yaml:
+  file.managed:
+  - source: salt://ceilometer/files/{{ server.version }}/event_pipeline.yaml
+  - template: jinja
+  - require:
+    - pkg: ceilometer_server_packages
+
 /etc/ceilometer/event_definitions.yaml:
   file.managed:
   - source: salt://ceilometer/files/{{ server.version }}/event_definitions.yaml
