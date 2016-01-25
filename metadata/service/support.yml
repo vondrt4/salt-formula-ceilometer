@@ -6,6 +6,6 @@ parameters:
       heka:
         enabled: true
       sensu:
-        enabled: false
-      sphinx:
         enabled: true
+      sphinx:
+        enabled: false
