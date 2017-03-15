@@ -3,6 +3,8 @@ applications:
 classes:
 - service.ceilometer.support
 parameters:
+  _param:
+    keystone_ceilometer_endpoint_type: internalURL
   ceilometer:
     server:
       enabled: true
@@ -22,6 +24,7 @@ parameters:
         tenant: service
         user: ceilometer
         password: ${_param:keystone_ceilometer_password}
+        endpoint_type: ${_param:keystone_ceilometer_endpoint_type}
       message_queue:
         engine: rabbitmq
         host: ${_param:cluster_vip_address}
