@@ -29,9 +29,15 @@ ceilometer:
       # Workaround for https://bugs.launchpad.net/ceilometer/+bug/1337715
       rpc_thread_pool_size: 5
     database:
-      engine: mongodb
-      host: 127.0.0.1
-      port: 27017
-      name: ceilometer
-      user: ceilometer
-      password: password
+      engine: influxdb
+      influxdb:
+        host: 127.0.0.1
+        port: 8086
+        name: ceilometer
+        user: ceilometer
+        password: password
+        database: database
+      elasticsearch:
+        enabled: true
+        host: 127.0.0.1
+        port: 8086

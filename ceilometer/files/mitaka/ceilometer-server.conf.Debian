@@ -193,7 +193,13 @@ alarm_history_time_to_live = {{ server.ttl }}
 # Deprecated group/name - [DEFAULT]/sql_connection
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
+{%- if server.database.influxdb.members is defined %}
+metering_connection = {% for member in server.database.influxdb.members -%}
+                   stacklight://{{ server.database.influxdb.user }}:{{ server.database.influxdb.password }}@{% for member in server.database.influxdb.members %}{{ member.host }}:{{ member.port }}{% if not loop.last %},{% endif %}{% endfor %}/{{ server.database.influxdb.name }}
+               	 {%- endfor -%}
+{%- else %}
 metering_connection = stacklight://{{ server.database.influxdb.user }}:{{ server.database.influxdb.password }}@{{ server.database.influxdb.host }}:{{ server.database.influxdb.port }}/{{ server.database.influxdb.database }}
+{%- endif %}
 
 {%- if server.database.elasticsearch.enabled %}
 resource_connection = es://{{ server.database.elasticsearch.host}}:{{server.database.elasticsearch.port }}
