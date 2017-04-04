@@ -385,6 +385,13 @@ kombu_reconnect_delay = 5.0
 # value)
 # Deprecated group/name - [DEFAULT]/rabbit_host
 #rabbit_host = localhost
+{%- if agent.message_queue.members is defined %}
+rabbit_hosts = {% for member in agent.message_queue.members -%}
+                   {{ member.host }}:{{ member.get('port', 5672) }}
+                   {%- if not loop.last -%},{%- endif -%}
+               {%- endfor -%}
+{%- else %}
+
 rabbit_host = {{ agent.message_queue.host }}
 
 # The RabbitMQ broker port where a single node is used. (integer
@@ -396,6 +403,8 @@ rabbit_port = {{ agent.message_queue.port }}
 # RabbitMQ HA cluster host:port pairs. (list value)
 # Deprecated group/name - [DEFAULT]/rabbit_hosts
 #rabbit_hosts = $rabbit_host:$rabbit_port
+
+{%- endif %}
 
 # Connect over SSL for RabbitMQ. (boolean value)
 # Deprecated group/name - [DEFAULT]/rabbit_use_ssl

@@ -1,0 +1,58 @@
+---
+driver:
+  name: docker
+  hostname: ceilometer.ci.local
+  use_sudo: false
+
+provisioner:
+  name: salt_solo
+  salt_install: bootstrap
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  salt_version: latest
+  require_chef: false
+  log_level: error
+  formula: ceilometer
+  grains:
+    noservices: True
+  state_top:
+    base:
+      "*":
+        - ceilometer
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - ceilometer
+
+verifier:
+  name: inspec
+  sudo: true
+
+platforms:
+  - name: ubuntu-xenial
+    driver_config:
+      image: trevorj/salty-whales:xenial
+      platform: ubuntu
+
+suites:
+
+  - name: agent_cluster
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/agent_cluster.sls
+
+  - name: agent_single
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/agent_single.sls
+
+  - name: server_cluster
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/server_cluster.sls
+
+  - name: server_single
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/server_single.sls
+# vim: ft=yaml sw=2 ts=2 sts=2 tw=125
