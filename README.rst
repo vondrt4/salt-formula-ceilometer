@@ -5,8 +5,12 @@ Ceilometer Formula
 
 The ceilometer project aims to deliver a unique point of contact for billing
 systems to acquire all of the measurements they need to establish customer
-billing, across all current OpenStack core components with work underway to
+billing, across all current OpenStack components with work underway to
 support future OpenStack components.
+This formula provides different backends for Ceilometer data: MongoDB, InfluxDB. Also,
+Graphite and direct (to Elasticsearch) publishers are available. If InfluxDB is used
+as a backend, heka is configured to consume messages from RabbitMQ and write in to
+InfluxDB, i.e. ceilometer collector service is not used in this configuration.
 
 Sample Pillars
 ==============
@@ -18,7 +22,7 @@ Ceilometer API/controller node
     ceilometer:
       server:
         enabled: true
-        version: havana
+        version: mitaka
         cluster: true
         secret: pwd
         bind:
@@ -38,13 +42,45 @@ Ceilometer API/controller node
           user: openstack
           password: pwd
           virtual_host: '/openstack'
+
+Databases configuration
+
+MongoDB example:
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
         database:
           engine: mongodb
-          host: 127.0.0.1
-          port: 27017
+          members:
+          - host: 10.0.106.10
+            port: 27017
+          - host: 10.0.106.20
+            port: 27017
+          - host: 10.0.106.30
+            port: 27017
           name: ceilometer
           user: ceilometer
-          password: pwd
+          password: password
+
+InfluxDB/Elasticsearch example:
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        database:
+          influxdb:
+            host: 10.0.106.10
+            port: 8086
+            user: ceilometer
+            password: password
+            database: ceilometer
+          elasticsearch:
+            enabled: true
+            host: 10.0.106.10
+            port: 9200
 
 Client-side RabbitMQ HA setup
 
@@ -56,9 +92,9 @@ Client-side RabbitMQ HA setup
         message_queue:
           engine: rabbitmq
           members:
-          - host: 127.0.0.1
-          - host: 127.0.0.1
-          - host: 127.0.0.1
+          - host: 10.0.106.10
+          - host: 10.0.106.20
+          - host: 10.0.106.30
           user: openstack
           password: pwd
           virtual_host: '/openstack'
@@ -85,7 +121,7 @@ Ceilometer compute agent
     ceilometer:
       agent:
         enabled: true
-        version: havana
+        version: mitaka
         secret: pwd
         identity:
           engine: keystone

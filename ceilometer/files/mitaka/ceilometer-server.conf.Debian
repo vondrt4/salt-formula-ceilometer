@@ -166,6 +166,28 @@ host={{ server.bind.host }}
 # (boolean value)
 #enable_reverse_dns_lookup=false
 
+[coordination]
+
+#
+# From ceilometer
+#
+
+# The backend URL to use for distributed coordination. If left empty, per-
+# deployment central agent and per-host compute agent won't do workload
+# partitioning and will only function correctly if a single instance of that
+# service is running. (string value)
+{%- if server.coordination_backend is defined %}
+backend_url = {{ server.coordination_backend.url }}
+{%-  endif %}
+
+# Number of seconds between heartbeats for distributed coordination. (floating
+# point value)
+#heartbeat = 1.0
+
+# Number of seconds between checks to see if group membership has changed
+# (floating point value)
+#check_watchers = 10.0
+
 [database]
 
 metering_time_to_live = {{ server.ttl }}
