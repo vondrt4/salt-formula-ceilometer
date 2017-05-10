@@ -36,9 +36,12 @@ doc:
         version:
           name: "Version"
           value: {{ server.version }}
+        database_engine:
+          name: "Database engine"
+          value: "{{ server.database.get('engine', 'mongodb') }}"
         database_host:
           name: "Database"
-          value: {{ server.database.user }}@{{ server.database.host }}:27017/{{ server.database.name }}
+          value: "{{ server.database.user }}@{% if server.database.host is defined %}{{ server.database.host }}{% else %}[{% for member in server.database.members %}{{ member.host }}:{{ member.get('port', '27017') }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}:27017/{{ server.database.name }}"
         message_queue_ip:
           name: "Message queue"
           value: {{ server.message_queue.user }}@{{ server.message_queue.host }}:{{ server.message_queue.port }}{{ server.message_queue.virtual_host }}
