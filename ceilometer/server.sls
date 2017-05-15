@@ -12,6 +12,30 @@ ceilometer_server_packages:
   - require:
     - pkg: ceilometer_server_packages
 
+{%- for name, rule in server.get('policy', {}).iteritems() %}
+
+{%- if rule != None %}
+rule_{{ name }}_present:
+  keystone_policy.rule_present:
+  - path: /etc/ceilometer/policy.json
+  - name: {{ name }}
+  - rule: {{ rule }}
+  - require:
+    - pkg: ceilometer_server_packages
+
+{%- else %}
+
+rule_{{ name }}_absent:
+  keystone_policy.rule_absent:
+  - path: /etc/ceilometer/policy.json
+  - name: {{ name }}
+  - require:
+    - pkg: ceilometer_server_packages
+
+{%- endif %}
+
+{%- endfor %}
+
 {%- for publisher_name, publisher in server.get('publisher', {}).iteritems() %}
 
 {%- if publisher_name != "default" %}

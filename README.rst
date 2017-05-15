@@ -43,6 +43,18 @@ Ceilometer API/controller node
           password: pwd
           virtual_host: '/openstack'
 
+Configuration of policy.json file
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        ....
+        policy:
+          segregation: 'rule:context_is_admin'
+          # Add key without value to remove line from policy.json
+          'telemetry:get_resource':
+
 Databases configuration
 
 MongoDB example:
