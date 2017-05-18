@@ -41,3 +41,6 @@ ceilometer:
         enabled: true
         host: 127.0.0.1
         port: 8086
+      policy:
+        segregation: 'rule:context_is_admin'
+        'telemetry:get_resource':
