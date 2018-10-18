@@ -53,3 +53,4 @@ parameters:
         #1 week
         event: 15724800
         #1/2 year
+        alarm: 604800

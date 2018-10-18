@@ -49,6 +49,7 @@
 {%- do server.update({'pkgs': pkgs.basic + pkgs.collector + pkgs.alarm}) %}
 {%- do server.update({'services': services.basic + services.collector + services.alarm}) %}
 {%- else %}
-{%- do server.update({'pkgs': pkgs.basic + pkgs.db_drivers}) %}
+{%- do server.update({'pkgs': pkgs.basic }) %}
+{# not possible in Ubuntu trusty + pkgs.db_drivers #}
 {%- do server.update({'services': services.basic}) %}
 {%- endif %}
