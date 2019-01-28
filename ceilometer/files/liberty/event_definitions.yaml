@@ -5,7 +5,7 @@
       fields: payload.tenant_id
     user_id:
       fields: payload.user_id
-    instance_id:
+    resource_id:
       fields: payload.instance_id
     host:
       fields: publisher_id
@@ -37,7 +37,7 @@
       fields: payload.instance_type_id
     instance_type:
       fields: payload.instance_type
-    state:
+    status:
       fields: payload.state
     os_architecture:
       fields: payload.image_meta.'org.openstack__1__architecture'
@@ -51,6 +51,8 @@
     deleted_at:
       type: datetime
       fields: payload.deleted_at
+    image_ref_url:
+      fields: payload.image_ref_url
 - event_type: compute.instance.exists
   traits:
     <<: *instance_traits
@@ -279,7 +281,7 @@
   traits:
     <<: *network_traits
     resource_id:
-      fields: ['payload.floatingip.id', 'payload.id']
+      fields: ['payload.floatingip.id', 'payload.id', 'payload.floatingip_id']
 - event_type: pool.*
   traits:
     <<: *network_traits
