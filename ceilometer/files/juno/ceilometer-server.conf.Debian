@@ -691,6 +691,7 @@ connection={{ server.database.engine }}://{{ server.database.user }}:{{ server.d
 # Number of seconds that samples are kept in the database for
 # (<= 0 means forever). (integer value)
 #time_to_live=-1
+time_to_live={{ server.ttl }}
 
 
 [dispatcher_file]
@@ -984,7 +985,7 @@ os_region_name=RegionOne
 
 # Type of endpoint in Identity service catalog to use for
 # communication with OpenStack services. (string value)
-#os_endpoint_type=publicURL
+os_endpoint_type={{ server.identity.get('endpoint_type', 'publicURL') }}
 
 # Disables X.509 certificate validation when an SSL connection
 # to Identity Service is established. (boolean value)

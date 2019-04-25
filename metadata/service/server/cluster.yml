@@ -3,12 +3,15 @@ applications:
 classes:
 - service.ceilometer.support
 parameters:
+  _param:
+    keystone_ceilometer_endpoint_type: internalURL
   ceilometer:
     server:
       enabled: true
       version: ${_param:ceilometer_version}
       cluster: true
       secret: ${_param:ceilometer_secret_key}
+      ttl: 86400
       publisher:
         default:
       bind:
@@ -21,6 +24,7 @@ parameters:
         tenant: service
         user: ceilometer
         password: ${_param:keystone_ceilometer_password}
+        endpoint_type: ${_param:keystone_ceilometer_endpoint_type}
       message_queue:
         engine: rabbitmq
         host: ${_param:cluster_vip_address}
@@ -28,7 +32,6 @@ parameters:
         user: openstack
         password: ${_param:rabbitmq_openstack_password}
         virtual_host: '/openstack'
-        ha_queues: true
         # Workaround for https://bugs.launchpad.net/ceilometer/+bug/1337715
         rpc_thread_pool_size: 5
       database:
@@ -50,3 +53,4 @@ parameters:
         #1 week
         event: 15724800
         #1/2 year
+        alarm: 604800

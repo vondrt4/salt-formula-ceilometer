@@ -168,6 +168,47 @@ host={{ server.bind.host }}
 
 [database]
 
+metering_time_to_live = {{ server.ttl }}
+event_time_to_live = {{ server.ttl }}
+alarm_history_time_to_live = {{ server.ttl }}
+
+#
+# From ceilometer
+#
+# Number of seconds that samples are kept in the database for (<= 0
+# means forever). (integer value)
+# Deprecated group/name - [database]/time_to_live
+metering_time_to_live = {{ server.ttl.meter }}
+
+# Number of seconds that events are kept in the database for (<= 0
+# means forever). (integer value)
+event_time_to_live = {{ server.ttl.event }}
+
+# The connection string used to connect to the metering database. (if
+# unset, connection is used) (string value)
+#metering_connection = <None>
+
+# The connection string used to connect to the alarm database. (if
+# unset, connection is used) (string value)
+#alarm_connection = <None>
+
+# The connection string used to connect to the event database. (if
+# unset, connection is used) (string value)
+#event_connection = <None>
+
+# The name of the replica set which is used to connect to MongoDB
+# database. If it is set, MongoReplicaSetClient will be used instead
+# of MongoClient. (string value)
+
+{%- if server.replica_set is defined %}
+mongodb_replica_set = {{ server.replica_set }}
+{%- endif %}
+
+# The max length of resources id in DB2 nosql, the value should be
+# larger than len(hostname) * 2 as compute node's resource id is
+# <hostname>_<nodename>. (integer value)
+#db2nosql_resource_id_maxlen = 512
+
 #
 # From ceilometer
 #
@@ -544,6 +585,15 @@ graphite=ceilometer.publisher.graphite:GraphitePublisher
 #kombu_reconnect_delay = 1.0
 kombu_reconnect_delay = 5.0
 
+# RabbitMQ HA cluster host:port pairs. (list value)
+# Deprecated group/name - [DEFAULT]/rabbit_hosts
+{%- if server.message_queue.members is defined %}
+rabbit_hosts = {% for member in server.message_queue.members -%}
+                   {{ member.host }}:{{ member.get('port', 5672) }}
+                   {%- if not loop.last -%},{%- endif -%}
+               {%- endfor -%}
+{%- else %}
+
 # The RabbitMQ broker address where a single node is used. (string
 # value)
 # Deprecated group/name - [DEFAULT]/rabbit_host
@@ -556,9 +606,7 @@ rabbit_host = {{ server.message_queue.host }}
 #rabbit_port = 5672
 rabbit_port = {{ server.message_queue.port }}
 
-# RabbitMQ HA cluster host:port pairs. (list value)
-# Deprecated group/name - [DEFAULT]/rabbit_hosts
-#rabbit_hosts = $rabbit_host:$rabbit_port
+{%- endif %}
 
 # Connect over SSL for RabbitMQ. (boolean value)
 # Deprecated group/name - [DEFAULT]/rabbit_use_ssl
@@ -582,7 +630,6 @@ rabbit_password = {{ server.message_queue.password }}
 # Deprecated group/name - [DEFAULT]/rabbit_virtual_host
 #rabbit_virtual_host = /
 rabbit_virtual_host = {{ server.message_queue.virtual_host }}
-rabbit_ha_queues={{ server.message_queue.ha_queues }}
 
 # How frequently to retry connecting with RabbitMQ. (integer value)
 #rabbit_retry_interval = 1
@@ -654,7 +701,7 @@ os_region_name=RegionOne
 
 # Type of endpoint in Identity service catalog to use for
 # communication with OpenStack services. (string value)
-#os_endpoint_type=publicURL
+os_endpoint_type={{ server.identity.get('endpoint_type', 'publicURL') }}
 
 # Disables X.509 certificate validation when an SSL connection
 # to Identity Service is established. (boolean value)

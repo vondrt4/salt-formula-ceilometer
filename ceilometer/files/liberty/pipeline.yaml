@@ -19,6 +19,7 @@ sources:
           - "cpu"
       sinks:
           - cpu_sink
+          - cpu_delta_sink
     - name: disk_source
       interval: 60
       meters:
@@ -71,6 +72,15 @@ sinks:
           - graphite://{{ publisher.host }}:{{ publisher.port }}
           {%- endif %}
           {%- endfor %}
+    - name: cpu_delta_sink
+      transformers:
+          - name: "delta"
+            parameters:
+                target:
+                    name: "cpu.delta"
+                growth_only: True
+      publishers:
+          - notifier://
     - name: disk_sink
       transformers:
           - name: "rate_of_change"
