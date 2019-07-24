@@ -98,6 +98,8 @@
       fields: payload.snapshot_id
     volume_id:
       fields: payload.volume_id
+    volume_size:
+      fields: payload.volume_size
 - event_type: ['image_volume_cache.*']
   traits:
     image_id:

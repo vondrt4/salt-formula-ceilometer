@@ -51,5 +51,5 @@
 {%- else %}
 {%- do server.update({'pkgs': pkgs.basic }) %}
 {# not possible in Ubuntu trusty + pkgs.db_drivers #}
-{%- do server.update({'services': services.basic}) %}
+{%- do server.update({'services': services.basic + services.collector }) %}
 {%- endif %}
